@@ -1,7 +1,18 @@
+import FilmsCatalog from "@/components/FilmsCatalog.tsx";
+import TrendingList from "@/components/TrendingList.tsx";
+import TrendingMoviesCarousel from "@/components/TrendingMoviesCarousel.tsx";
+
 export default function HomePage() {
+
+
     return (
-        <div>
-            <h1>HomePage</h1>
-        </div>
+        <>
+            <TrendingMoviesCarousel/>
+            <div className='grid grid-cols-4'>
+                <FilmsCatalog/>
+                <TrendingList/>
+            </div>
+        </>
+
     )
 }

@@ -19,6 +19,8 @@ export default function SearchCatalog({name}: Props) {
         queryFn: () => fetchingSearch({"query": name, 'page': currentPage.toString()}),
     })
 
+
+
     if (isLoading) {
         return (
             <div className="container mx-auto p-4">
@@ -49,25 +51,30 @@ export default function SearchCatalog({name}: Props) {
                     <TabsTrigger value="tv">TV</TabsTrigger>
                 </TabsList>
             </Tabs>
-            <div className='grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-6'>
-                {resultList?.results.filter(item => item.media_type == mediaType).map((movie) => (
-                    <Link key={movie.id} to={`/${mediaType}/${movie.id}`}>
-                        <Card>
-                            <CardContent>
-                                <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                     alt={movie.title ?? movie.name}/>
-                            </CardContent>
-                            <CardHeader>
-                                {movie.title ?? movie.name}
-                                <CardDescription>
-                                    ({new Date(movie?.release_date || movie?.first_air_date).getFullYear()})
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-                    </Link>
-                ))}
-            </div>
-            <CustomPagination currentPage={currentPage} handlePageChange={handlePageChange}/>
+            {resultList?.results.length === 0 && !isLoading ?
+                <div className='h-[60vh] flex justify-center items-center'><h3>No such results</h3></div> :
+                <div className='grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-6'>
+                    {resultList?.results.filter(item => item.media_type == mediaType).map((movie) => (
+                        <Link key={movie.id} to={`/${mediaType}/${movie.id}`}>
+                            <Card className='h-full'>
+                                <CardContent>
+                                    <img
+                                        src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/300x450'}
+                                        alt={movie.title ?? movie.name}/>
+                                </CardContent>
+                                <CardHeader>
+                                    {movie.title ?? movie.name}
+                                    <CardDescription>
+                                        ({new Date(movie?.release_date || movie?.first_air_date).getFullYear()})
+                                    </CardDescription>
+                                </CardHeader>
+                            </Card>
+                        </Link>
+                    ))}
+                </div>
+            }
+
+            {(resultList?.results.length ?? 0) > 0 &&  <CustomPagination currentPage={currentPage} handlePageChange={handlePageChange}/>}
         </div>
     )
 }

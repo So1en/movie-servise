@@ -52,9 +52,7 @@ export default function SearchCatalog({name}: Props) {
             <div className='grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-6'>
                 {resultList?.results.filter(item => item.media_type == mediaType).map((movie) => (
                     <Link key={movie.id} to={`/${mediaType}/${movie.id}`}>
-                        <Card>
                             <CardContent>
-                                <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                                      alt={movie.title ?? movie.name}/>
                             </CardContent>
                             <CardHeader>
@@ -67,7 +65,6 @@ export default function SearchCatalog({name}: Props) {
                     </Link>
                 ))}
             </div>
-            <CustomPagination currentPage={currentPage} handlePageChange={handlePageChange}/>
         </div>
     )
 }

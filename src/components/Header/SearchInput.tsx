@@ -1,22 +1,51 @@
 import {BiSearchAlt2} from "react-icons/bi";
-import {useState} from "react";
+import {useForm} from "react-hook-form";
+
+import {cn} from "@/lib/utils"
+import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 import {clsx} from "clsx";
 
-export default function SearchInput() {
-    const [isActive, setIsActive] = useState(false);
+type SearchInputProps = {
+    className?: string,
+    onSubmitSuccess?: () => void,
+    defaultValue?: string | null
+}
+
+type SearchForm = {
+    search: string,
+
+}
+
+
+export default function SearchInput({className, onSubmitSuccess, defaultValue}: SearchInputProps) {
+    const navigate = useNavigate();
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: {errors}
+    } = useForm<SearchForm>({defaultValues: {search: defaultValue ?? ''}})
+
+    useEffect(() => {
+        if (defaultValue) reset({search: defaultValue})
+    }, [defaultValue, reset]);
+
+    const onSubmit = ({search}: SearchForm) => {
+        navigate(`/search?search=${search}`);
+        reset();
+        onSubmitSuccess && onSubmitSuccess();
+    }
     return (
-        <div className="ml-auto relative flex items-center">
+        <form onSubmit={handleSubmit(onSubmit)} className={cn("ml-auto w-[250px] relative items-center", className)}>
             <input
-                className={clsx("border rounded bg-black font-medium font text-sm p-1.5 w-[250px] transition-all duration-300 ",
-                    isActive || "w-0 opacity-0 "
-                )}
+                className={clsx("border rounded bg-background font-medium font text-sm p-1.5 w-full", errors.search && '-red-950' )}
                 type="text"
                 placeholder="Search movies..."
-                onChange={(e) => {
-                    console.log(e.target.value);
-                }}/>
-            <button className="absolute right-1 top-1/2 -translate-y-1/2" onClick={() => setIsActive(!isActive)}>
+                {...register("search", {required: true}) }
+            />
+            <button type="submit" className="absolute right-1 top-1/2 -translate-y-1/2">
                 <BiSearchAlt2 size={30}/></button>
-        </div>
+        </form>
     )
 }

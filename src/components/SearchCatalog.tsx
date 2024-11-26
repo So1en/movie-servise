@@ -19,7 +19,7 @@ export default function SearchCatalog({name}: Props) {
         queryFn: () => fetchingSearch({"query": name, 'page': currentPage.toString()}),
     })
 
-
+    const filteredResultList = resultList?.results.filter((movie) => movie.media_type === mediaType) ?? [];
 
     if (isLoading) {
         return (
@@ -51,10 +51,10 @@ export default function SearchCatalog({name}: Props) {
                     <TabsTrigger value="tv">TV</TabsTrigger>
                 </TabsList>
             </Tabs>
-            {resultList?.results.length === 0 && !isLoading ?
+            {filteredResultList.length === 0 && !isLoading ?
                 <div className='h-[60vh] flex justify-center items-center'><h3>No such results</h3></div> :
                 <div className='grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-6'>
-                    {resultList?.results.filter(item => item.media_type == mediaType).map((movie) => (
+                    {filteredResultList.map((movie) => (
                         <Link key={movie.id} to={`/${mediaType}/${movie.id}`}>
                             <Card className='h-full'>
                                 <CardContent>
@@ -74,7 +74,7 @@ export default function SearchCatalog({name}: Props) {
                 </div>
             }
 
-            {(resultList?.results.length ?? 0) > 0 &&  <CustomPagination currentPage={currentPage} handlePageChange={handlePageChange}/>}
+            {(filteredResultList.length ?? 0) > 0 &&  <CustomPagination currentPage={currentPage} handlePageChange={handlePageChange}/>}
         </div>
     )
 }
